@@ -1,0 +1,772 @@
+Composition {
+	CurrentTime = 405,
+	RenderRange = { 300, 12852 },
+	GlobalRange = { 300, 12852 },
+	CurrentID = 1441,
+	HiQ = true,
+	PlaybackUpdateMode = 0,
+	StereoMode = false,
+	Version = "DaVinci Resolve 19.0.2.0007",
+	SavedOutputs = 1,
+	HeldTools = 0,
+	DisabledTools = 0,
+	LockedTools = 0,
+	AudioOffset = 0,
+	Resumable = true,
+	OutputClips = {
+	},
+	CustomData = { TEMPLATE_ID = "Fusion Generator" },
+	Tools = {
+		MediaIn1 = Loader {
+			ExtentSet = true,
+			CtrlWZoom = false,
+			CustomData = {
+				MediaProps = {
+					MEDIA_AUDIO_TRACKS_DESC = {
+						{
+							MEDIA_AUDIO_BIT_DEPTH = 32,
+							MEDIA_AUDIO_FRAME_RATE = 30,
+							MEDIA_AUDIO_NUM_CHANNELS = 2,
+							MEDIA_AUDIO_SAMPLE_RATE = 48000,
+							MEDIA_AUDIO_START_TIME = 300,
+							MEDIA_AUDIO_TRACK_ID = "Timeline Audio",
+							MEDIA_AUDIO_TRACK_NAME = "Timeline Audio [Timeline 1]"
+						}
+					},
+					MEDIA_AUDIO_TRACKS_NUM = 1,
+					MEDIA_HAS_AUDIO = true,
+					MEDIA_HEIGHT = 1080,
+					MEDIA_IS_SOURCE_RES = false,
+					MEDIA_MARK_IN = 300,
+					MEDIA_MARK_OUT = 12852,
+					MEDIA_NAME = "Fusion Composition",
+					MEDIA_NUM_FRAMES = 12553,
+					MEDIA_PAR = 1,
+					MEDIA_SRC_FRAME_RATE = 30,
+					MEDIA_START_FRAME = 300,
+					MEDIA_WIDTH = 1920,
+				},
+			},
+			Inputs = {
+				GlobalIn = Input { Value = 300, },
+				GlobalOut = Input { Value = 12852, },
+				AudioTrack = Input { Value = FuID { "Timeline Audio" }, },
+				Layer = Input { Value = "0", },
+				ClipTimeStart = Input { Value = 300, },
+				ClipTimeEnd = Input { Value = 12852, },
+				["Gamut.SLogVersion"] = Input { Value = FuID { "SLog2" }, },
+				LeftAudio = Input {
+					SourceOp = "Left",
+					Source = "Data",
+				},
+				RightAudio = Input {
+					SourceOp = "Right",
+					Source = "Data",
+				},
+			},
+			ViewInfo = OperatorInfo { Pos = { 553.842, 185.654 } },
+			Version = 1,
+			Clips = {
+				Clip {
+					ID = "Clip1",
+					Length = 12553,
+					LengthSetManually = true,
+					GlobalStart = 300,
+					GlobalEnd = 12852,
+					TrimIn = 300,
+					TrimOut = 12852,
+				}
+			}
+		},
+		Left = AudioDisplay {
+		},
+		Right = AudioDisplay {
+			CtrlWZoom = false,
+		},
+		BackgroundRectangle = RectangleMask {
+			NameSet = true,
+			Inputs = {
+				Filter = Input { Value = FuID { "Fast Gaussian" }, },
+				MaskWidth = Input { Value = 1920, },
+				MaskHeight = Input { Value = 1080, },
+				PixelAspect = Input { Value = { 1, 1 }, },
+				UseFrameFormatSettings = Input { Value = 1, },
+				ClippingMode = Input { Value = FuID { "None" }, },
+				Center = Input {
+					SourceOp = "Path1",
+					Source = "Position",
+				},
+				Width = Input {
+					SourceOp = "BackgroundRectangleWidth1",
+					Source = "Value",
+				},
+				Height = Input { Value = 0.13, }
+			},
+			ViewInfo = OperatorInfo { Pos = { 188.513, -37.7365 } },
+		},
+		Path1 = PolyPath {
+			DrawMode = "InsertAndModify",
+			CtrlWZoom = false,
+			Inputs = {
+				Displacement = Input {
+					SourceOp = "Path1Displacement",
+					Source = "Value",
+				},
+				PolyLine = Input {
+					Value = Polyline {
+						Points = {
+							{ Linear = true, LockY = true, X = -0.395, Y = 0.4 }
+						}
+					},
+				}
+			},
+		},
+		BackgroundRectangleWidth1 = BezierSpline {
+			SplineColor = { Red = 225, Green = 255, Blue = 0 },
+			CtrlWZoom = false,
+			NameSet = true,
+			KeyFrames = {
+				[0] = { 0.18, Flags = { Linear = true } }
+			}
+		},
+		Path1Displacement = BezierSpline {
+			SplineColor = { Red = 255, Green = 0, Blue = 255 },
+			CtrlWZoom = false,
+			NameSet = true,
+			KeyFrames = {
+				[0] = { 0, Flags = { LockedY = true } }
+			}
+		},
+		Period1Background = Background {
+			NameSet = true,
+			Inputs = {
+				EffectMask = Input {
+					SourceOp = "BackgroundRectangle",
+					Source = "Mask",
+				},
+				GlobalIn = Input { Value = 300, },
+				GlobalOut = Input { Value = 12852, },
+				Width = Input { Value = 1920, },
+				Height = Input { Value = 1080, },
+				UseFrameFormatSettings = Input { Value = 1, },
+				["Gamut.SLogVersion"] = Input { Value = FuID { "SLog2" }, },
+				TopLeftAlpha = Input { Value = 0.85, }
+			},
+			ViewInfo = OperatorInfo { Pos = { 322.998, -36.3773 } },
+		},
+		TeamName2 = TextPlus {
+			NameSet = true,
+			Inputs = {
+				GlobalIn = Input { Value = 300, },
+				GlobalOut = Input { Value = 12852, },
+				Width = Input { Value = 1920, },
+				Height = Input { Value = 1080, },
+				UseFrameFormatSettings = Input { Value = 1, },
+				["Gamut.SLogVersion"] = Input { Value = FuID { "SLog2" }, },
+				Center = Input { Value = { 0.0254551679753461, 0.869034443817053 }, },
+				LayoutRotation = Input { Value = 1, },
+				TransformRotation = Input { Value = 1, },
+				Softness1 = Input { Value = 1, },
+				StyledText = Input { Value = "Dra", },
+				Font = Input { Value = "Open Sans", },
+				Style = Input { Value = "Bold", },
+				Size = Input { Value = 0.05, },
+				VerticalJustificationNew = Input { Value = 3, },
+				HorizontalLeftCenterRight = Input { Value = -1, },
+				HorizontalJustificationNew = Input { Value = 3, }
+			},
+			ViewInfo = OperatorInfo { Pos = { 516.582, 98.0361 } },
+		},
+		TeamName1 = TextPlus {
+			NameSet = true,
+			Inputs = {
+				GlobalIn = Input { Value = 300, },
+				GlobalOut = Input { Value = 12852, },
+				Width = Input { Value = 1920, },
+				Height = Input { Value = 1080, },
+				UseFrameFormatSettings = Input { Value = 1, },
+				["Gamut.SLogVersion"] = Input { Value = FuID { "SLog2" }, },
+				Center = Input { Value = { 0.0267917338220564, 0.930683229813665 }, },
+				LayoutRotation = Input { Value = 1, },
+				TransformRotation = Input { Value = 1, },
+				Softness1 = Input { Value = 1, },
+				StyledText = Input { Value = "MaHa", },
+				Font = Input { Value = "Open Sans", },
+				Style = Input { Value = "Bold", },
+				Size = Input { Value = 0.05, },
+				VerticalJustificationNew = Input { Value = 3, },
+				HorizontalLeftCenterRight = Input { Value = -1, },
+				HorizontalJustificationNew = Input { Value = 3, }
+			},
+			ViewInfo = OperatorInfo { Pos = { 397.626, 81.2566 } },
+		},
+		Team1P2Score = TextPlus {
+			NameSet = true,
+			Inputs = {
+				GlobalIn = Input { Value = 300, },
+				GlobalOut = Input { Value = 12852, },
+				Width = Input { Value = 1920, },
+				Height = Input { Value = 1080, },
+				UseFrameFormatSettings = Input { Value = 1, },
+				["Gamut.SLogVersion"] = Input { Value = FuID { "SLog2" }, },
+				Center = Input { Value = { 0.213192771084337, 0.930683229813665 }, },
+				LayoutRotation = Input { Value = 1, },
+				TransformRotation = Input { Value = 1, },
+				Opacity1 = Input {
+					SourceOp = "Team1P2ScoreOpacity1",
+					Source = "Value",
+				},
+				Softness1 = Input { Value = 1, },
+				StyledText = Input {
+					SourceOp = "Team1P2ScoreStyledText",
+					Source = "Value",
+				},
+				Font = Input { Value = "Open Sans", },
+				Style = Input { Value = "Bold", },
+				Size = Input { Value = 0.05, },
+				VerticalJustificationNew = Input { Value = 3, },
+				HorizontalJustificationNew = Input { Value = 3, },
+				Counter = Input {
+					SourceOp = "Publish3",
+					Source = "Value",
+				}
+			},
+			ViewInfo = OperatorInfo { Pos = { 567.508, -136.575 } },
+			UserControls = ordered() { Counter = { INP_MaxAllowed = 80, INP_Integer = true, INPID_InputControl = "SliderControl", IC_Steps = 2, INP_MaxScale = 80, INP_Default = 80, INP_MinScale = 0, INP_MinAllowed = -11, LINKID_DataType = "Number", ICS_ControlPage = "Text", ICD_Center = 40, LINKS_Name = "Counter" } }
+		},
+		Team1P2ScoreOpacity1 = BezierSpline {
+			SplineColor = { Red = 179, Green = 28, Blue = 244 },
+			CtrlWZoom = false,
+			NameSet = true,
+			KeyFrames = {
+				[0] = { 0, Flags = { Linear = true } }
+			}
+		},
+		Team1P2ScoreStyledText = BezierSpline {
+			SplineColor = { Red = 237, Green = 142, Blue = 243 },
+			CtrlWZoom = false,
+			NameSet = true,
+			KeyFrames = {
+				[0] = { 0, Flags = { Linear = true, LockedY = true }, Value = Text {
+						Value = "80"
+					} }
+			}
+		},
+		Publish3 = PublishNumber {
+			CtrlWZoom = false,
+			Inputs = {
+				Value = Input { Value = 80, }
+			},
+		},
+		Team1P1Score = TextPlus {
+			NameSet = true,
+			Inputs = {
+				GlobalIn = Input { Value = 300, },
+				GlobalOut = Input { Value = 12852, },
+				Width = Input { Value = 1920, },
+				Height = Input { Value = 1080, },
+				UseFrameFormatSettings = Input { Value = 1, },
+				["Gamut.SLogVersion"] = Input { Value = FuID { "SLog2" }, },
+				Center = Input { Value = { 0.165, 0.930683229813665 }, },
+				LayoutRotation = Input { Value = 1, },
+				TransformRotation = Input { Value = 1, },
+				Softness1 = Input { Value = 1, },
+				StyledText = Input {
+					SourceOp = "Team1P1ScoreStyledText1",
+					Source = "Value",
+				},
+				Font = Input { Value = "Open Sans", },
+				Style = Input { Value = "Bold", },
+				Size = Input { Value = 0.05, },
+				VerticalJustificationNew = Input { Value = 3, },
+				HorizontalJustificationNew = Input { Value = 3, },
+				Counter = Input {
+					SourceOp = "Publish2",
+					Source = "Value",
+				}
+			},
+			ViewInfo = OperatorInfo { Pos = { 411.729, -135.405 } },
+			UserControls = ordered() { Counter = { INP_MaxAllowed = 80, INP_Integer = true, INPID_InputControl = "SliderControl", IC_Steps = 2, INP_MaxScale = 80, INP_Default = 80, INP_MinScale = 0, INP_MinAllowed = -11, LINKID_DataType = "Number", ICS_ControlPage = "Text", ICD_Center = 40, LINKS_Name = "Counter" } }
+		},
+		Team1P1ScoreStyledText1 = BezierSpline {
+			SplineColor = { Red = 237, Green = 142, Blue = 243 },
+			CtrlWZoom = false,
+			NameSet = true,
+			KeyFrames = {
+				[0] = { 0, Flags = { Linear = true, LockedY = true }, Value = Text {
+						Value = "80"
+					} }
+			}
+		},
+		Publish2 = PublishNumber {
+			CtrlWZoom = false,
+			Inputs = {
+				Value = Input { Value = -1, }
+			},
+		},
+		Team2P1Score = TextPlus {
+			NameSet = true,
+			Inputs = {
+				GlobalIn = Input { Value = 300, },
+				GlobalOut = Input { Value = 12852, },
+				Width = Input { Value = 1920, },
+				Height = Input { Value = 1080, },
+				UseFrameFormatSettings = Input { Value = 1, },
+				["Gamut.SLogVersion"] = Input { Value = FuID { "SLog2" }, },
+				Center = Input { Value = { 0.165, 0.869034443817053 }, },
+				LayoutRotation = Input { Value = 1, },
+				TransformRotation = Input { Value = 1, },
+				Softness1 = Input { Value = 1, },
+				StyledText = Input {
+					SourceOp = "Team2P1ScoreStyledText1",
+					Source = "Value",
+				},
+				Font = Input { Value = "Open Sans", },
+				Style = Input { Value = "Bold", },
+				Size = Input { Value = 0.05, },
+				VerticalJustificationNew = Input { Value = 3, },
+				HorizontalJustificationNew = Input { Value = 3, },
+				Counter = Input {
+					SourceOp = "Publish1",
+					Source = "Value",
+				}
+			},
+			ViewInfo = OperatorInfo { Pos = { 408.558, -98.0806 } },
+			UserControls = ordered() { Counter = { INP_MaxAllowed = 80, INP_Integer = true, INPID_InputControl = "SliderControl", IC_Steps = 2, INP_MaxScale = 80, INP_Default = 80, INP_MinScale = 0, INP_MinAllowed = -11, LINKID_DataType = "Number", ICS_ControlPage = "Text", ICD_Center = 40, LINKS_Name = "Counter" } }
+		},
+		Team2P1ScoreStyledText1 = BezierSpline {
+			SplineColor = { Red = 237, Green = 142, Blue = 243 },
+			CtrlWZoom = false,
+			NameSet = true,
+			KeyFrames = {
+				[0] = { 0, Flags = { Linear = true, LockedY = true }, Value = Text {
+						Value = "80"
+					} }
+			}
+		},
+		Publish1 = PublishNumber {
+			CtrlWZoom = false,
+		},
+		Team2P2Score = TextPlus {
+			NameSet = true,
+			Inputs = {
+				GlobalIn = Input { Value = 300, },
+				GlobalOut = Input { Value = 12852, },
+				Width = Input { Value = 1920, },
+				Height = Input { Value = 1080, },
+				UseFrameFormatSettings = Input { Value = 1, },
+				["Gamut.SLogVersion"] = Input { Value = FuID { "SLog2" }, },
+				Center = Input { Value = { 0.213192771084337, 0.869034443817053 }, },
+				LayoutRotation = Input { Value = 1, },
+				TransformRotation = Input { Value = 1, },
+				Opacity1 = Input {
+					SourceOp = "Team2P2ScoreOpacity11",
+					Source = "Value",
+				},
+				Softness1 = Input { Value = 1, },
+				StyledText = Input {
+					SourceOp = "Team2P2ScoreStyledText1",
+					Source = "Value",
+				},
+				Font = Input { Value = "Open Sans", },
+				Style = Input { Value = "Bold", },
+				Size = Input { Value = 0.05, },
+				VerticalJustificationNew = Input { Value = 3, },
+				HorizontalJustificationNew = Input { Value = 3, },
+				Counter = Input {
+					SourceOp = "Publish4",
+					Source = "Value",
+				}
+			},
+			ViewInfo = OperatorInfo { Pos = { 577.07, -94.9034 } },
+			UserControls = ordered() { Counter = { INP_MaxAllowed = 80, INP_Integer = true, INPID_InputControl = "SliderControl", IC_Steps = 2, INP_MaxScale = 80, INP_Default = 80, INP_MinScale = 0, INP_MinAllowed = -11, LINKID_DataType = "Number", ICS_ControlPage = "Text", ICD_Center = 40, LINKS_Name = "Counter" } }
+		},
+		Team2P2ScoreOpacity11 = BezierSpline {
+			SplineColor = { Red = 179, Green = 28, Blue = 244 },
+			CtrlWZoom = false,
+			NameSet = true,
+			KeyFrames = {
+				[0] = { 0, Flags = { Linear = true } }
+			}
+		},
+		Team2P2ScoreStyledText1 = BezierSpline {
+			SplineColor = { Red = 237, Green = 142, Blue = 243 },
+			CtrlWZoom = false,
+			NameSet = true,
+			KeyFrames = {
+				[0] = { 0, Flags = { Linear = true, LockedY = true }, Value = Text {
+						Value = "80"
+					} }
+			}
+		},
+		Publish4 = PublishNumber {
+			CtrlWZoom = false,
+			Inputs = {
+				Value = Input { Value = 80, }
+			},
+		},
+		Team1TotalScore = TextPlus {
+			NameSet = true,
+			Inputs = {
+				GlobalIn = Input { Value = 300, },
+				GlobalOut = Input { Value = 12852, },
+				Width = Input { Value = 1920, },
+				Height = Input { Value = 1080, },
+				UseFrameFormatSettings = Input { Value = 1, },
+				["Gamut.SLogVersion"] = Input { Value = FuID { "SLog2" }, },
+				Center = Input { Value = { 0.284277108433735, 0.930683229813665 }, },
+				LayoutRotation = Input { Value = 1, },
+				TransformRotation = Input { Value = 1, },
+				Opacity1 = Input {
+					SourceOp = "Team1TotalScoreOpacity11",
+					Source = "Value",
+				},
+				Softness1 = Input { Value = 1, },
+				StyledText = Input {
+					SourceOp = "Team1TotalScoreStyledText",
+					Source = "Value",
+					Expression = "Team1P2Score.StyledText.Value + Team1P1Score.StyledText.Value",
+				},
+				Font = Input { Value = "Open Sans", },
+				Style = Input { Value = "Bold", },
+				Size = Input { Value = 0.05, },
+				VerticalJustificationNew = Input { Value = 3, },
+				HorizontalJustificationNew = Input { Value = 3, }
+			},
+			ViewInfo = OperatorInfo { Pos = { 682.175, -134.505 } },
+		},
+		Team1TotalScoreOpacity11 = BezierSpline {
+			SplineColor = { Red = 179, Green = 28, Blue = 244 },
+			CtrlWZoom = false,
+			NameSet = true,
+			KeyFrames = {
+				[0] = { 0, Flags = { Linear = true } }
+			}
+		},
+		Team1TotalScoreStyledText = BezierSpline {
+			SplineColor = { Red = 237, Green = 142, Blue = 243 },
+			CtrlWZoom = false,
+			KeyFrames = {
+				[-157] = { 0, Flags = { Linear = true, LockedY = true }, Value = Text {
+						Value = "78"
+					} }
+			}
+		},
+		Team2TotalScore = TextPlus {
+			NameSet = true,
+			Inputs = {
+				GlobalIn = Input { Value = 300, },
+				GlobalOut = Input { Value = 12852, },
+				Width = Input { Value = 1920, },
+				Height = Input { Value = 1080, },
+				UseFrameFormatSettings = Input { Value = 1, },
+				["Gamut.SLogVersion"] = Input { Value = FuID { "SLog2" }, },
+				Center = Input { Value = { 0.284277108433735, 0.869034443817053 }, },
+				LayoutRotation = Input { Value = 1, },
+				TransformRotation = Input { Value = 1, },
+				Opacity1 = Input {
+					SourceOp = "Team2TotalScoreOpacity11",
+					Source = "Value",
+				},
+				Softness1 = Input { Value = 1, },
+				StyledText = Input {
+					SourceOp = "Team2TotalScoreStyledText",
+					Source = "Value",
+					Expression = "Team2P2Score.StyledText.Value + Team2P1Score.StyledText.Value",
+				},
+				Font = Input { Value = "Open Sans", },
+				Style = Input { Value = "Bold", },
+				Size = Input { Value = 0.05, },
+				VerticalJustificationNew = Input { Value = 3, },
+				HorizontalJustificationNew = Input { Value = 3, }
+			},
+			ViewInfo = OperatorInfo { Pos = { 697.947, -94.1932 } },
+		},
+		Team2TotalScoreOpacity11 = BezierSpline {
+			SplineColor = { Red = 179, Green = 28, Blue = 244 },
+			CtrlWZoom = false,
+			NameSet = true,
+			KeyFrames = {
+				[0] = { 0, Flags = { Linear = true } }
+			}
+		},
+		Team2TotalScoreStyledText = BezierSpline {
+			SplineColor = { Red = 237, Green = 142, Blue = 243 },
+			CtrlWZoom = false,
+			KeyFrames = {
+				[-157] = { 0, Flags = { Linear = true, LockedY = true }, Value = Text {
+						Value = "85"
+					} }
+			}
+		},
+		MultiMerge1 = MultiMerge {
+			NameSet = true,
+			Inputs = {
+				LayerOrder = Input { Value = ScriptVal { { [0] = 1, 2, 3, 4, 5, 7, 8, 9 } }, },
+				Background = Input {
+					SourceOp = "Period1Background",
+					Source = "Output",
+				},
+				["Layer1.Foreground"] = Input {
+					SourceOp = "TeamName2",
+					Source = "Output",
+				},
+				LayerName1 = Input { Value = "Team2Name Layer", },
+				["Layer2.Foreground"] = Input {
+					SourceOp = "TeamName1",
+					Source = "Output",
+				},
+				LayerName2 = Input { Value = "Team1Name Layer", },
+				["Layer3.Foreground"] = Input {
+					SourceOp = "Team1P2Score",
+					Source = "Output",
+				},
+				LayerName3 = Input { Value = "Team1Period2Score Layer", },
+				["Layer4.Foreground"] = Input {
+					SourceOp = "Team1P1Score",
+					Source = "Output",
+				},
+				LayerName4 = Input { Value = "Team1Period1Score Layer", },
+				["Layer5.Foreground"] = Input {
+					SourceOp = "Team2P1Score",
+					Source = "Output",
+				},
+				LayerName5 = Input { Value = "Team1Period1Score Layer", },
+				["Layer7.Foreground"] = Input {
+					SourceOp = "Team2P2Score",
+					Source = "Output",
+				},
+				LayerName7 = Input { Value = "Team2Period2Score Layer", },
+				["Layer8.Foreground"] = Input {
+					SourceOp = "Team1TotalScore",
+					Source = "Output",
+				},
+				LayerName8 = Input { Value = "Team1TotalScore Layer", },
+				["Layer9.Foreground"] = Input {
+					SourceOp = "Team2TotalScore",
+					Source = "Output",
+				},
+				LayerName9 = Input { Value = "Team2TotalScore Layer", }
+			},
+			ViewInfo = OperatorInfo { Pos = { 566.568, 0.445929 } },
+		},
+		Merge1 = Merge {
+			Inputs = {
+				Background = Input {
+					SourceOp = "MediaIn1",
+					Source = "Output",
+				},
+				Foreground = Input {
+					SourceOp = "MultiMerge1",
+					Source = "Output",
+				},
+				PerformDepthMerge = Input { Value = 0, }
+			},
+			ViewInfo = OperatorInfo { Pos = { 734.509, 178.382 } },
+		},
+		MediaOut1 = Saver {
+			Inputs = {
+				Index = Input { Value = "0", },
+				Input = Input {
+					SourceOp = "Merge1",
+					Source = "Output",
+				}
+			},
+			ViewInfo = OperatorInfo { Pos = { 1075, 170.21 } },
+		},
+		Period2Rectangle = RectangleMask {
+			NameSet = true,
+			Inputs = {
+				Filter = Input { Value = FuID { "Fast Gaussian" }, },
+				MaskWidth = Input { Value = 1920, },
+				MaskHeight = Input { Value = 1080, },
+				PixelAspect = Input { Value = { 1, 1 }, },
+				UseFrameFormatSettings = Input { Value = 1, },
+				ClippingMode = Input { Value = FuID { "None" }, },
+				Center = Input { Value = { 0.165, 0.9 }, },
+				Width = Input { Value = 0.3, },
+				Height = Input { Value = 0.13, }
+			},
+			ViewInfo = OperatorInfo { Pos = { 190.315, 7.15567 } },
+		},
+		Period2Background = Background {
+			NameSet = true,
+			Inputs = {
+				EffectMask = Input {
+					SourceOp = "Period2Rectangle",
+					Source = "Mask",
+				},
+				GlobalIn = Input { Value = 300, },
+				GlobalOut = Input { Value = 12852, },
+				Width = Input { Value = 1920, },
+				Height = Input { Value = 1080, },
+				UseFrameFormatSettings = Input { Value = 1, },
+				["Gamut.SLogVersion"] = Input { Value = FuID { "SLog2" }, }
+			},
+			ViewInfo = OperatorInfo { Pos = { 321.029, 6.80065 } },
+		}
+	},
+	Frames = {
+		{
+			FrameTypeID = "ChildFrame",
+			Mode = 3,
+			LayoutPreset = 0,
+			PresetName = "Current",
+			Left = 0,
+			Top = 0,
+			Width = 1920,
+			Height = 890,
+			ZoneInfo = { ["!Right"] = {
+				}, ["!Left"] = {
+				}, AuxLeft = { Expanded = true }, Right = { Expanded = true, }, Left = { Expanded = false, }, AuxRight = { Expanded = true } },
+			ViewInfo = { Viewer1 = { Show = true, RatioX = 1, RatioY = 0.01, }, InnerLeft = {
+				}, MainSplit = { RatioX = 100, RatioY = 0.997658079625295, }, CenterSplit = { RatioX = 0.933199732798931, RatioY = 100, }, Viewer2 = { Show = true, RatioX = 1, RatioY = 0.01, }, Comments = { Show = false }, Time = { Show = true, RatioX = 100, }, InnerColumns = { RatioX = 100, RatioY = 2.00234192037471, }, Keyframes = { Show = false, }, LayoutStrip = { Show = true, }, Inspector = { Show = true, RatioX = 100, RatioY = 1, }, InnerRight = {
+				}, ActionStrip = { Show = true, RatioX = 100, }, OuterColumns = { RatioX = 100, RatioY = 1, }, Effects = { Show = false, }, Clips = { Show = false, }, Metadata = { Show = false, }, OuterLeft = {
+				}, ViewerSplit = { RatioX = 100, RatioY = 1, }, Nodes = { Show = true, Adjust = false, RatioX = 1, RatioY = 100, MRU = 1 }, OuterRight = { RatioY = 100, PixelX = 520, }, MediaPool = { Show = false, }, Spline = { Show = false, } },
+			Views = ordered() {
+				MediaPool = "MediaPoolView",
+				Effects = MultiView {
+					Active = "EffectView",
+					ViewList = ordered() {
+						EffectView = "EffectView"
+					},
+				},
+				Nodes = MultiView {
+					Active = "FlowView",
+					ViewList = ordered() {
+						FlowView = "FlowView"
+					},
+					FlowView = FlowView {
+						Flags = {
+							Navigator = true,
+							AutoHideNavigator = true,
+							AutoSnap = true,
+							RemoveRouters = true
+						},
+						NavigatorSize = { 200, 140 },
+						Direction = "Horizontal",
+						PipeStyle = "Direct",
+						RootScale = 0.499999,
+						RootOffset = { 170.16, 169.498 }
+					}
+				},
+				Keyframes = MultiView {
+					Active = "TimelineView",
+					ViewList = ordered() {
+						TimelineView = "TimelineView"
+					},
+					TimelineView = TimelineView {
+						TreeControlState = {
+						},
+						DisplayMode = "All Tools",
+						ShowCurrentTimeTools = false,
+						Filter = "Show All",
+						ShowSelectedTools = false,
+						ShowAnimatedToolsOnly = false,
+						ShowEditBoxes = false,
+						KeyFrameView = {
+							Position = { Left = 232, Bottom = 324 },
+							ScaleX = 0.317021276595745,
+							OffsetX = -7.92553191489333,
+							OffsetY = 0,
+							AutoScaling = "scroll",
+							AutoSnapTo = "frame",
+							AutoSnapToGuidelines = true,
+							GuidelinesGrabEnabled = true,
+							GuidelinesSnapTo = "none"
+						},
+						Spreadsheet = { LeftPos = 232, Visible = false }
+					}
+				},
+				Spline = MultiView {
+					Active = "SplineView",
+					ViewList = ordered() {
+						SplineView = "SplineEditorView"
+					},
+					SplineView = SplineEditorView {
+						LeftPos = 264,
+						ScaleX = 0.2,
+						ScaleY = 0.00334448160535117,
+						OffsetX = -3.39999999999998,
+						OffsetY = 0,
+						AutoScaling = "scroll",
+						AutoSnapTo = "frame",
+						AutoSnapToGuidelines = true,
+						GuidelinesSnapTo = "frame",
+						ShowKeyMarkers = false,
+						IndependentHandles = false,
+						ShowNonSplineModifiers = false,
+						GuidelinesGrabEnabled = true,
+						ShowOneToolOnly = false,
+						ShowSelectedTools = false,
+						ShowAllInputs = false,
+						Filter = "Show All"
+					}
+				},
+				Inspector = MultiView {
+					Active = "Tools",
+					ViewList = ordered() {
+						Tools = "ControlView",
+						Modifiers = "ModifierView"
+					},
+				},
+				Viewer1 = MultiView {
+					Active = "LeftView",
+					ViewList = ordered() {
+						LeftView = "PreviewContainer"
+					},
+				},
+				Viewer2 = MultiView {
+					Active = "RightView",
+					ViewList = ordered() {
+						RightView = "PreviewContainer"
+					},
+				},
+				Time = "TimeView",
+				ActionStrip = "ActionStripView",
+				LayoutStrip = "LayoutStripView",
+				Clips = "ClipsView",
+				Metadata = "MetadataView"
+			},
+			Layout = { { ID = "LayoutStrip", FixedY = 36, Flat = true, Resolve = false }, { { { ID = "MediaPool", Fusion = false, RatioX = 1 }, { ID = "Effects", RatioX = 1 }, PixelX = 420, Rows = 2, PaneID = "OuterLeft", Zone = "Left" }, { { { { ID = "MediaPool", Fusion = false, RatioX = 1 }, { ID = "Effects", RatioX = 1 }, PaneID = "InnerLeft", MaxViews = 1, PixelX = 420, Rows = 2, Zone = "!Left" }, { { { ID = "Viewer1", RatioY = 0.01, RatioX = 1 }, { ID = "Viewer2", RatioX = 1 }, RatioY = 1, Columns = 2, PaneID = "ViewerSplit" }, { ID = "Time", FixedY = 83, Flat = true }, RatioX = 1, Rows = 2 }, { { ID = "Inspector", RatioY = 1 }, { ID = "Metadata", RatioY = 1, Fusion = false }, PaneID = "InnerRight", MaxViews = 1, PixelX = 420, Rows = 2, Zone = "!Right" }, RatioY = 2, Columns = 3, PaneID = "InnerColumns" }, { ID = "ActionStrip", FixedY = 50, Flat = true }, { { ID = "Nodes", RatioX = 1 }, { ID = "Spline", RatioX = 1 }, { ID = "Keyframes", RatioX = 1 }, RatioY = 1, Columns = 3, PaneID = "MainSplit" }, { LARGE_FixedY = 160, ID = "Clips", Fusion = false, MEDIUM_FixedY = 138, SMALL_FixedY = 110 }, RatioX = 1, Rows = 4, PaneID = "CenterSplit" }, { { ID = "Inspector", RatioY = 1 }, { ID = "Metadata", RatioY = 1, Fusion = false }, PixelX = 420, Rows = 2, PaneID = "OuterRight", Zone = "Right" }, RatioY = 1, Columns = 3, PaneID = "OuterColumns" }, RatioX = 1, Rows = 2, RatioY = 1 },
+			TopBar = { Left = { "Left", "MediaPool", "Effects", "Clips", "Nodes", "Console" }, Right = { "Spline", "Keyframes", "Metadata", "Inspector", "Right" } }
+		}
+	},
+	Prefs = {
+		Comp = {
+			Interactive = {
+				Proxy = {
+					Scale = 1,
+				},
+			},
+			Views = {
+				RightView = {
+					Viewer = {
+					},
+					SubView = { Enabled = false, GLHistogramViewer = { AutoBounds = true }, },
+				},
+				LeftView = {
+					Viewer = {
+						Region = { Top = 1.02504873275757, Auto = true, Bottom = -0.000925925909541547, Enable = true, Right = -0.111686319112778, Left = -0.423455476760864 }
+					},
+				},
+				View1 = {
+				},
+			},
+			Paths = {
+				Map = {
+					["ResolveCaches:"] = "E:\\kyykkavids\\CacheClip\\a9537904-b453-4d6d-8734-568c866edde3\\f3628fd9-b2a3-482b-a804-468daf23678b\\e5264c3e-03b9-401b-942c-4c1472bc01d5\\Fusion"
+				},
+			},
+			FrameFormat = {
+				DepthFull = 3,
+				DepthPreview = 3,
+				DepthInteractive = 3,
+			},
+			Unsorted = {
+				GlobalStart = 300,
+				GlobalEnd = 12852
+			},
+		}
+	},
+}

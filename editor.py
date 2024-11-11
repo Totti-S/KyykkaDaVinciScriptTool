@@ -11,6 +11,7 @@ def run_automatic_editor(
     add_names_to_clip: bool = True,
     add_score_to_clip: bool = True,
     thrower_data: np.ndarray[np.str_] | None = None,
+    points_direction: bool = True,
     fusion_app = None
 ) -> bool:
     if fusion_app is None:
@@ -160,6 +161,7 @@ def run_automatic_editor(
         team = int(not starter_team) # First conversion removes condition from 1st 'if'
         scores = [80, 80]
         throws = [16, 16]
+        direction = -1 if points_direction else 1
         for i in range(16):
             if i % 2 == 0:
                 team = int(not team)
@@ -177,9 +179,9 @@ def run_automatic_editor(
                 frame = start_frames[clip_number+1] # Change the score after the clip
                 throws[team] -= 1
                 if scores[team] > 0:
-                    team_nodes[team].StyledText[frame] = scores[team]
+                    team_nodes[team].StyledText[frame] = scores[team] * direction
                 else:
-                    team_nodes[team].StyledText[frame] = throws[team]
+                    team_nodes[team].StyledText[frame] = throws[team] * direction
                 clip_number += 1
         return clip_number
 
@@ -242,6 +244,6 @@ def run_automatic_editor(
     return True
 
 if __name__ == "__main__":
-    # out = run_automatic_editor()
-    # print(f"Editointi loppui. Editointi palautti arvon: {out}")
-    print(app)
+    out = run_automatic_editor(points_direction=False)
+    print(f"Editointi loppui. Editointi palautti arvon: {out}")
+    # print(app)

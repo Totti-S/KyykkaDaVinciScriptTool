@@ -66,6 +66,7 @@ def launch_program():
             add_names_to_clip=names.get(),
             add_score_to_clip=points_var.get(),
             thrower_data=thrower_data,
+            points_direction=points_direction.get(),
             fusion_app=app,
         )
         if val is True:
@@ -296,6 +297,21 @@ ttk.Button(setup_window, text="Pisteet", command=launch_points_window).grid(
 )
 running_row += 1
 
+tk.Label(setup_window, text="Mailoja yli:").grid(row=running_row, column=0)
+points_direction = tk.BooleanVar(setup_window, value=True)
+ttk.Radiobutton(
+    setup_window, 
+    text="Positiivinen",
+    variable=points_direction,
+    value=True, 
+).grid(row=running_row, column=1)
+ttk.Radiobutton(
+    setup_window, 
+    text="Negatiivinen",
+    variable=points_direction,
+    value=False, 
+).grid(row=running_row, column=2)
+running_row += 1
 ttk.Button(setup_window, text="Aloita ohjelma", command=launch_program).grid(
     row=running_row,
     column=0,

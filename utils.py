@@ -17,7 +17,7 @@ def load_data(file_path: str) -> tuple[np.ndarray[np.str_], np.ndarray[np.str_],
     # Thrower matrix: 2 rounds x 2 teams x 4 players x 4 throws + 1 name
     thrower_data = np.empty((2,2,4,5), dtype=(np.str_, 32))
     thrower_data[:] = ""
-    starting_team = True
+    starting_team = False
     try:
         with open(file_path, 'r', encoding='utf-8') as file: 
             game_data = file.readlines()
@@ -28,13 +28,13 @@ def load_data(file_path: str) -> tuple[np.ndarray[np.str_], np.ndarray[np.str_],
                 data = game_data.pop(0)[1:]
                 home_team, away_team, starter, *other = data.split(";")
                 if (tmp := starter.lower()) == 'home' or tmp == 'koti':
-                    starting_team = True
+                    starting_team = False
                 elif tmp == 'away' or tmp == 'vieras':
-                    starting_team = False
-                elif tmp == home_team.lower():
                     starting_team = True
-                elif tmp == away_team.lower():
+                elif tmp == home_team.lower():
                     starting_team = False
+                elif tmp == away_team.lower():
+                    starting_team = True
             
             def parse_and_save_data(current_team: int, data: list[str], period: int) -> None:
                 for i, line in enumerate(data):

@@ -52,8 +52,7 @@ def start_loading_data():
     for period in range(2):
         for team in range(2):
             for player in range(4):
-                t = int(not team)
-                entries[period][t][player].set(throw_array[period][team][player][0])
+                entries[period][team][player].set(throw_array[period][team][player][0])
 
     data_loaded.set("Data Ladattu")
     print(throw_array)
@@ -268,18 +267,18 @@ make_entries(running_row, 1)
 running_row += 4 + 1   # Add the entires and proceed to next empty row 
 
 tk.Label(setup_window, text="1. Erän aloittaja").grid(row=running_row, column=0)
-starting_team = tk.BooleanVar(setup_window, value=True)
-ttk.Radiobutton(
-    setup_window, 
-    text="",
-    variable=starting_team,
-    value=True, 
-).grid(row=running_row, column=1)
+starting_team = tk.BooleanVar(setup_window, value=False)
 ttk.Radiobutton(
     setup_window, 
     text="",
     variable=starting_team,
     value=False, 
+).grid(row=running_row, column=1)
+ttk.Radiobutton(
+    setup_window, 
+    text="",
+    variable=starting_team,
+    value=True, 
 ).grid(row=running_row, column=2)
 running_row += 1
 

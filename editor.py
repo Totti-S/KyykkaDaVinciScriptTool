@@ -162,6 +162,9 @@ def run_automatic_editor(
         scores = [80, 80]
         throws = [16, 16]
         direction = -1 if points_direction else 1
+        frame = start_frames[clip_number]
+        team_nodes[0].StyledText[frame] = scores[0] * direction
+        team_nodes[1].StyledText[frame] = scores[1] * direction
         for i in range(16):
             if i % 2 == 0:
                 team = int(not team)
@@ -174,7 +177,7 @@ def run_automatic_editor(
             for score in [st, nd]:
                 if score == "e":
                     break
-                elif st != 'h':
+                elif score != 'h':
                     scores[team] -= int(score)
                 frame = start_frames[clip_number+1] # Change the score after the clip
                 throws[team] -= 1

@@ -2,11 +2,11 @@ import tkinter as tk
 from tkinter import ttk
 import numpy as np
 from editor import run_automatic_editor
-from utils import load_data, find_file
+from utils import load_data, find_file, ask_filename
 
 setup_window = tk.Tk()
 setup_window.title("Ottelun asetukset")
-setup_window.minsize(400, 700)
+setup_window.minsize(450, 700)
 setup_window.geometry('450x200+50+50')
 
 game_data = None
@@ -15,6 +15,13 @@ thrower_data = np.empty((2,2,4,5), dtype=(np.str_, 32))
 thrower_data[:] = ""
 
 running_row = 0
+
+def empty_name_data():
+    for period in range(2):
+        for team in range(2):
+            for player in range(4):
+                t = int(not team)
+                entries[period][t][player].set("")
 
 def start_finding_file():
     path = find_file()
@@ -42,20 +49,20 @@ def start_loading_data():
     starting_team.set(start_team)
 
     # Insert data to entires in main window.
-    for period in range(0, 2):
-        for team in range(0, 2):
-            for player in range(0, 4):
+    for period in range(2):
+        for team in range(2):
+            for player in range(4):
                 t = int(not team)
-                entires[period][t][player].set(throw_array[period][team][player][0])
+                entries[period][t][player].set(throw_array[period][team][player][0])
 
     data_loaded.set("Data Ladattu")
     print(throw_array)
 
 def launch_program():
     if not names.get() and not points_var.get():
-        start_label.set("Ei mitään valittu")
+        status.set("Ei mitään valittu")
     else:
-        start_label.set("")
+        status.set("")
         val = run_automatic_editor(
             start_offset=so_var.get(),
             middle_offset=mid_var.get(),
@@ -70,10 +77,50 @@ def launch_program():
             fusion_app=app,
         )
         if val is True:
-            start_label.set("Ohjelma ajoi onnistuneesti.")
+            status.set("Ohjelma ajoi onnistuneesti.")
         else:
-            start_label.set("Ohjelmassa men jotain vikaan.")
+            status.set("Ohjelmassa men jotain vikaan.")
 
+def launch_saving():
+    team = int(not starting_team.get())
+    for period in range(2):
+        for i in range(16):
+            if i % 2 == 0:
+                team = int(not team)
+            if i < 8:
+                player = i % 2 + 2 * (i // 4)
+                thrower_data[period][team][player][0] = entries[period][team][player].get()
+            else:
+                player = i % 2 + 2 * ((i - 8) // 4)
+                thrower_data[period][team][player][0] = entries[period][team][player].get()
+    status.set("Nimi data tallennettu.")
+
+def launch_saving_to_file():
+    file_name = ask_filename()
+    print(file_name)
+    with open(file_name, 'w', encoding='utf-8') as file:
+        
+        # header line
+        starter_team_name = 'home' if starting_team.get() else 'away'
+        home = all_teams[0].get()
+        away = all_teams[1].get()
+        file.write('#' + ';'.join([home, away, starter_team_name]) + '\n')
+
+        team = int(not starting_team.get())
+        for period in range(2):
+            for i in range(16):
+                if i % 2 == 0:
+                    team = int(not team)
+                if i < 8:
+                    player = i % 2 + 2 * (i // 4)
+                    name, st, nd, *_ = thrower_data[period][team][player]
+                else:
+                    player = i % 2 + 2 * ((i - 8) // 4)
+                    name, _, _, st, nd = thrower_data[period][team][player]
+                
+                file.write(';'.join([name, st, nd]) + '\n')
+            file.write('#\n')
+            
 
 def launch_points_window():
     row_idx = 0
@@ -114,7 +161,7 @@ def launch_points_window():
     make_period_entries(1, row_idx)
     row_idx += 6
 
-    for col in range(0, 13):
+    for col in range(13):
         if col == 3 or col == 10: 
             continue
         ttk.Label(other_window, text="------").grid(row=row_idx, column=col)
@@ -123,32 +170,32 @@ def launch_points_window():
     make_period_entries(2, row_idx)
     row_idx += 6
 
-    for col in range(0, 13):
+    for col in range(13):
         if col == 3 or col == 10: 
             continue
         ttk.Label(other_window, text="------").grid(row=row_idx, column=col)
     row_idx += 1
 
     def empty_fun():
-        for period in range(0, 2):
-            for team in range(0, 2):
-                for player in range(0, 4):
-                    for throw in range(0, 4):
+        for period in range(2):
+            for team in range(2):
+                for player in range(4):
+                    for throw in range(4):
                         player_points[period][team][player][throw].set("")
 
     def load_from_matrix():
-        for period in range(0, 2):
-            for team in range(0, 2):
-                for player in range(0, 4):
+        for period in range(2):
+            for team in range(2):
+                for player in range(4):
                     for throw in range(1, 5):
                         player_points[period][team][player][throw-1].set(
                             thrower_data[period][team][player][throw]
                         )
 
     def save_to_matrix():
-        for period in range(0, 2):
-            for team in range(0, 2):
-                for player in range(0, 4):
+        for period in range(2):
+            for team in range(2):
+                for player in range(4):
                     for throw in range(1, 5):
                         thrower_data[period][team][player][throw] = (
                             player_points[period][team][player][throw-1].get()
@@ -185,7 +232,7 @@ def make_entries(row_idx: int, round_no: int):
             ttk.Entry(setup_window, textvariable=entry_var, justify='center').grid(
                 row=row_idx+j, column=i
             )
-            entires[round_no-1][i-1].append(entry_var)
+            entries[round_no-1][i-1].append(entry_var)
 
 
 ttk.Button(setup_window, text="Etsi tiedosto", command=start_finding_file).grid(row=running_row, column=0)
@@ -211,7 +258,7 @@ running_row += 1
 make_label_line(running_row)
 running_row += 1
 
-entires = [
+entries = [
     [[], []], # 1st period
     [[], []], # 2nd period
 ]
@@ -312,9 +359,31 @@ ttk.Radiobutton(
     value=False, 
 ).grid(row=running_row, column=2)
 running_row += 1
+
+
+ttk.Button(setup_window, text="Tallenna nimi data", command=launch_saving).grid(
+    row=running_row,
+    column=0,
+)
+ttk.Button(setup_window, text="Tyhjennä nimi data", command=empty_name_data).grid(
+    row=running_row,
+    column=1,
+)
+running_row += 1
+
+ttk.Button(setup_window, text="Tallenna data tiedostoon", command=launch_saving_to_file).grid(
+    row=running_row,
+    column=0,
+)
+running_row += 1
+
 ttk.Button(setup_window, text="Aloita ohjelma", command=launch_program).grid(
     row=running_row,
     column=0,
+)
+ttk.Button(setup_window, text="Poistu", command=lambda:setup_window.destroy()).grid(
+    row=running_row,
+    column=1
 )
 running_row += 1
 
@@ -323,16 +392,6 @@ tk.Label(setup_window, textvariable=status, fg='#0000FF').grid(
     row=running_row,
     column=0,
 )
-running_row += 1
-
-ttk.Button(setup_window, text="Poistu", command=lambda:setup_window.destroy()).grid(
-    row=running_row,
-    column=0
-)
-running_row += 1
-
-start_label = tk.StringVar(setup_window)
-ttk.Label(setup_window, textvariable=start_label).grid(row=running_row, column=0)
 running_row += 1
 
 setup_window.mainloop()

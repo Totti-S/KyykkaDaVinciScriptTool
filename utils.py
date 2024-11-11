@@ -6,6 +6,11 @@ def find_file() -> str:
     tk.Tk().withdraw() # prevents an empty tkinter window from appearing
     path = filedialog.askopenfilename()
     return path
+
+def ask_filename() -> str:
+    tk.Tk().withdraw() # prevents an empty tkinter window from appearing
+    path = filedialog.asksaveasfilename()
+    return path
     
 def load_data(file_path: str) -> tuple[np.ndarray[np.str_], np.ndarray[np.str_], tuple[str, str], bool] | bool:
     game_data = None

@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
+from itertools import product
 import numpy as np
 from editor import run_automatic_editor
 from utils import load_data, find_file, ask_filename
@@ -17,11 +18,9 @@ thrower_data[:] = ""
 running_row = 0
 
 def empty_name_data():
-    for period in range(2):
-        for team in range(2):
-            for player in range(4):
-                t = int(not team)
-                entries[period][t][player].set("")
+    for period, team, player in product(range(2), range(2), range(4)):
+        t = int(not team)
+        entries[period][t][player].set("")
 
 def start_finding_file():
     path = find_file()
@@ -49,10 +48,8 @@ def start_loading_data():
     starting_team.set(start_team)
 
     # Insert data to entires in main window.
-    for period in range(2):
-        for team in range(2):
-            for player in range(4):
-                entries[period][team][player].set(throw_array[period][team][player][0])
+    for period, team, player in product(range(2), range(2), range(4)):
+        entries[period][team][player].set(throw_array[period][team][player][0])
 
     data_loaded.set("Data Ladattu")
     print(throw_array)
@@ -82,16 +79,15 @@ def launch_program():
 
 def launch_saving():
     team = int(not starting_team.get())
-    for period in range(2):
-        for i in range(16):
-            if i % 2 == 0:
-                team = int(not team)
-            if i < 8:
-                player = i % 2 + 2 * (i // 4)
-                thrower_data[period][team][player][0] = entries[period][team][player].get()
-            else:
-                player = i % 2 + 2 * ((i - 8) // 4)
-                thrower_data[period][team][player][0] = entries[period][team][player].get()
+    for period, i in product(range(2), range(16)):
+        if i % 2 == 0:
+            team = int(not team)
+        if i < 8:
+            player = i % 2 + 2 * (i // 4)
+            thrower_data[period][team][player][0] = entries[period][team][player].get()
+        else:
+            player = i % 2 + 2 * ((i - 8) // 4)
+            thrower_data[period][team][player][0] = entries[period][team][player].get()
     status.set("Nimi data tallennettu.")
 
 def launch_saving_to_file():
@@ -176,29 +172,20 @@ def launch_points_window():
     row_idx += 1
 
     def empty_fun():
-        for period in range(2):
-            for team in range(2):
-                for player in range(4):
-                    for throw in range(4):
-                        player_points[period][team][player][throw].set("")
+        for period, team, player, throw in product(range(2), range(2), range(4), range(4)):
+            player_points[period][team][player][throw].set("")
 
     def load_from_matrix():
-        for period in range(2):
-            for team in range(2):
-                for player in range(4):
-                    for throw in range(1, 5):
-                        player_points[period][team][player][throw-1].set(
-                            thrower_data[period][team][player][throw]
-                        )
+        for period, team, player, throw in product(range(2), range(2), range(4), range(4)):
+            player_points[period][team][player][throw].set(
+                thrower_data[period][team][player][throw+1]
+            )
 
     def save_to_matrix():
-        for period in range(2):
-            for team in range(2):
-                for player in range(4):
-                    for throw in range(1, 5):
-                        thrower_data[period][team][player][throw] = (
-                            player_points[period][team][player][throw-1].get()
-                        )
+        for period, team, player, throw in product(range(2), range(2), range(4), range(4)):
+            thrower_data[period][team][player][throw+1] = (
+                player_points[period][team][player][throw].get()
+            )
         saved_var.set("Data tallennettu!")
 
     # Initialize the entries

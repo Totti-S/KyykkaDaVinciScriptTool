@@ -13,14 +13,17 @@ class Kyykkaliiga(Enum):
 async def get_data_from_api(liiga: Kyykkaliiga, match_id: int, year: int = 2024):
     thrower_data = np.empty((2,2,4,5), dtype=(np.str_, 32))
     thrower_data[:] = ""
+    team_names = []
+    starting_team = None
+
     print(liiga, liiga == Kyykkaliiga.OKL)
     loop = asyncio.get_event_loop()
     if liiga == Kyykkaliiga.NKL:
-        match_id = 5351
         api_url = f"https://kyykka.com/api/matches/{match_id}"
         response = await loop.run_in_executor(None, requests.get, api_url)
         data = response.json()
-
+        team_names.append(data['home_team']['current_abbreviation'])
+        team_names.append(data['away_team']['current_abbreviation'])
         for period, p_name in enumerate(['first', 'second']):
             for team, t_name in enumerate(['home', 'away']):
                 players = data[f'{p_name}_round'][t_name]
@@ -36,7 +39,6 @@ async def get_data_from_api(liiga: Kyykkaliiga, match_id: int, year: int = 2024)
                         thrower_data[period][team][turn][throw] = score
 
     elif liiga == Kyykkaliiga.OKL:
-
         api_url = f"https://www.oamkry.fi/tilastot/a-{year-1}-{year}/pelin_tilasto.php?pelinro={match_id}"
         response = await loop.run_in_executor(None, requests.get, api_url)
         list_of_df = pd.read_html(response.text, encoding='utf-8')
@@ -64,7 +66,8 @@ async def get_data_from_api(liiga: Kyykkaliiga, match_id: int, year: int = 2024)
             if last_team_name != team:
                 last_team = int(not last_team)
                 last_team_name = team
-
+                if len(team_names) < 2:
+                    team_names.append(last_team_name)
             thrower_data[period][last_team][player] = [name, st, nd, rd, th]
             i += 1
 
@@ -79,11 +82,11 @@ async def get_data_from_api(liiga: Kyykkaliiga, match_id: int, year: int = 2024)
             if "&ndash;" in line:
                 header = line
                 break
-        print(header)
         home, away, *other = re.findall(r'(\(.*\))', header)
         home = home.rstrip(')').lstrip('(')
         away = away.rstrip(')').lstrip('(')
-
+        team_names.append(home)
+        team_names.append(away)
         list_of_df = pd.read_html(response.text, encoding='utf-8')
         period = None
         last_team = 0
@@ -116,7 +119,7 @@ async def get_data_from_api(liiga: Kyykkaliiga, match_id: int, year: int = 2024)
             thrower_data[period][last_team][player] = [name, st, nd, rd, th]
             i += 1
 
-    return thrower_data
+    return thrower_data, team_names, starting_team
 
 if __name__ == '__main__':
     print('Hello')

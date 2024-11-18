@@ -4,6 +4,9 @@ from itertools import product
 import numpy as np
 from editor import run_automatic_editor
 from utils import load_data, find_file, ask_filename
+from data_getter import get_data_from_api, Kyykkaliiga
+import asyncio
+
 
 setup_window = tk.Tk()
 setup_window.title("Ottelun asetukset")
@@ -22,38 +25,77 @@ def empty_name_data():
         t = int(not team)
         entries[period][t][player].set("")
 
-def start_finding_file():
-    path = find_file()
-    file_path.set(path)
-    if game_data is not None:
-        data_loaded.set("Vanha data edelleen käytössä.")
-    if game_data is None:
-        data_loaded.set("")
-
-def start_loading_data():
-    global thrower_data
-    if file_path.get() in ['None', '']:
-        data_loaded.set("Tiedosta ei valittu.")
-        return
-    print(file_path.get())
-    return_values = load_data(file_path.get())
-    if isinstance(return_values, bool) and return_values is False:
-        data_loaded.set("Datan lataus epäonnistui")
-        return None
-
-    throw_array, team_names, start_team = return_values
-    thrower_data = throw_array
+def set_data_main_window(team_names: list[str], start_team: int):
     all_teams[0].set(team_names[0])
     all_teams[1].set(team_names[1])
     starting_team.set(start_team)
 
     # Insert data to entires in main window.
     for period, team, player in product(range(2), range(2), range(4)):
-        entries[period][team][player].set(throw_array[period][team][player][0])
+        entries[period][team][player].set(thrower_data[period][team][player][0])
+    print(thrower_data)
 
+def start_loading_data():
+    global thrower_data
+    path = find_file()
+    if path is None or path == '':
+        data_loaded.set("Tiedosta ei valittu.")
+        return
+    print(path)
+    return_values = load_data(path)
+    if isinstance(return_values, bool) and return_values is False:
+        data_loaded.set("Datan lataus epäonnistui")
+        return None
+
+    thrower_data, team_names, start_team = return_values
+    set_data_main_window(team_names, start_team)
+    data_loaded.set('Data Ladattu tiedostosta')
+
+def start_loading_from_api():
+    global thrower_data
+    if selected_value.get() == "OKL:n Sivuilta":
+        liiga = Kyykkaliiga.OKL
+    elif selected_value.get() == "NKL:n Sivuilta":
+        liiga = Kyykkaliiga.NKL
+    elif selected_value.get() == "Tre kyykkäliigan sivuilta":
+        liiga = Kyykkaliiga.kyykkäliiga        
+    else:
+        return
+    
+    thrower_data, team_names, starting_team = asyncio.run(get_data_from_api(liiga, match_id=match_id.get(), year=year.get()))
+    print("hei", thrower_data)
+    if starting_team is None:
+        starting_team = 0
+    set_data_main_window(team_names, starting_team)
     data_loaded.set("Data Ladattu")
-    print(throw_array)
 
+
+
+def combo_buttons(node):
+    if selected_value.get() in ["Teksti tiedostosta", ""]:
+        match_label.grid_forget()
+        match_id_entry.grid_forget()
+        year_label.grid_forget()
+        year_entry.grid_forget()
+        find_file_button.grid_forget()
+        find_web_button.grid_forget()
+    elif selected_value.get() == "OKL:n Sivuilta":
+        year_label.grid(row=combo_row, column=2)
+        year_entry.grid(row=combo_row+1, column=2)
+    else:
+        year_label.grid_forget()
+        year_entry.grid_forget()
+
+    if selected_value.get() not in ["Teksti tiedostosta", ""]:
+        find_file_button.grid_forget()
+        find_web_button.grid(row=combo_row+1, column=0)
+        match_label.grid(row=combo_row, column=1)
+        match_id_entry.grid(row=combo_row+1, column=1)
+    else:
+        find_file_button.grid(row=combo_row+1, column=0)
+        find_web_button.grid_forget()
+
+    
 def launch_program():
     if not names.get() and not points_var.get():
         status.set("Ei mitään valittu")
@@ -221,14 +263,34 @@ def make_entries(row_idx: int, round_no: int):
             entries[round_no-1][i-1].append(entry_var)
 
 
-ttk.Button(setup_window, text="Etsi tiedosto", command=start_finding_file).grid(row=running_row, column=0)
-file_path = tk.StringVar(setup_window, "None")
-ttk.Label(setup_window, textvariable=file_path).grid(row=running_row, column=1)
+selected_value = tk.StringVar(setup_window)
+combo = ttk.Combobox(setup_window, width=25, textvariable=selected_value, justify='center')
+combo['values'] = (
+    "Teksti tiedostosta",
+    "OKL:n Sivuilta",
+    "NKL:n Sivuilta",
+    "Tre kyykkäliigan sivuilta", 
+)
+combo.grid(row=running_row, column=0)
+
+match_label = ttk.Label(setup_window, text="Ottelu Id")
+match_id = tk.IntVar(setup_window)
+match_id_entry = ttk.Entry(setup_window, textvariable=match_id, width=5, justify='center')
+
+year_label = ttk.Label(setup_window, text="Vuosi")
+year = tk.IntVar(setup_window)
+year_entry = ttk.Entry(setup_window, textvariable=year, width=5, justify='center')
+
+combo.bind("<<ComboboxSelected>>", combo_buttons)
+combo_row = running_row
+running_row += 2
+
+find_file_button = ttk.Button(setup_window, text="Lataa Tiedostosta", command=start_loading_data)
+find_web_button = ttk.Button(setup_window, text="Lataa Sivulta", command=start_loading_from_api)
 running_row += 1
 
-ttk.Button(setup_window, text="Lataa data", command=start_loading_data).grid(row=running_row, column=0)
 data_loaded = tk.StringVar(setup_window)
-ttk.Label(setup_window, textvariable=data_loaded).grid(row=running_row, column=1)
+ttk.Label(setup_window, textvariable=data_loaded).grid(row=running_row, column=0)
 running_row += 1
 
 ttk.Label(setup_window, text="Koti").grid(row=running_row, column=1)

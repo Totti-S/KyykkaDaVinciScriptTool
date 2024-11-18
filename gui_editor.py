@@ -3,10 +3,9 @@ from tkinter import ttk
 from itertools import product
 import numpy as np
 from editor import run_automatic_editor
-from utils import load_data, find_file, ask_filename
+import utils
 from data_getter import get_data_from_api, Kyykkaliiga
 import asyncio
-
 
 setup_window = tk.Tk()
 setup_window.title("Ottelun asetukset")
@@ -37,12 +36,12 @@ def set_data_main_window(team_names: list[str], start_team: int):
 
 def start_loading_data():
     global thrower_data
-    path = find_file()
+    path = utils.find_file()
     if path is None or path == '':
         data_loaded.set("Tiedosta ei valittu.")
         return
     print(path)
-    return_values = load_data(path)
+    return_values = utils.load_data(path)
     if isinstance(return_values, bool) and return_values is False:
         data_loaded.set("Datan lataus epäonnistui")
         return None
@@ -133,30 +132,11 @@ def launch_saving():
     status.set("Nimi data tallennettu.")
 
 def launch_saving_to_file():
-    file_name = ask_filename()
-    print(file_name)
-    with open(file_name, 'w', encoding='utf-8') as file:
-        
-        # header line
-        starter_team_name = 'home' if starting_team.get() else 'away'
-        home = all_teams[0].get()
-        away = all_teams[1].get()
-        file.write('#' + ';'.join([home, away, starter_team_name]) + '\n')
-
-        team = int(not starting_team.get())
-        for period in range(2):
-            for i in range(16):
-                if i % 2 == 0:
-                    team = int(not team)
-                if i < 8:
-                    player = i % 2 + 2 * (i // 4)
-                    name, st, nd, *_ = thrower_data[period][team][player]
-                else:
-                    player = i % 2 + 2 * ((i - 8) // 4)
-                    name, _, _, st, nd = thrower_data[period][team][player]
-                
-                file.write(';'.join([name, st, nd]) + '\n')
-            file.write('#\n')
+    team_names = [
+        all_teams[0].get(),
+        all_teams[1].get(),
+    ]
+    utils.save_data(thrower_data, team_names, int(starting_team.get()))
             
 
 def launch_points_window():

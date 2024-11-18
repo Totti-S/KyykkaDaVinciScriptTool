@@ -65,6 +65,29 @@ def load_data(file_path: str) -> tuple[np.ndarray[np.str_], np.ndarray[np.str_],
         print(f"Jotain meni pieleen: {e}")
         return False
     
+
+def save_data(thrower_data: np.ndarray[np.str_], team_names: list[str], starting_team: int,):
+    print(thrower_data)
+    file_name = ask_filename()
+    with open(file_name, 'w', encoding='utf-8') as file:
+        # header line
+        starter_team_name = 'home' if starting_team else 'away'
+        file.write('#' + ';'.join([*team_names, starter_team_name]) + '\n')
+        team = int(not starting_team)
+        for period in range(2):
+            for i in range(16):
+                if i % 2 == 0:
+                    team = int(not team)
+                if i < 8:
+                    player = i % 2 + 2 * (i // 4)
+                    name, st, nd, *_ = thrower_data[period][team][player]
+                else:
+                    player = i % 2 + 2 * ((i - 8) // 4)
+                    name, _, _, st, nd = thrower_data[period][team][player]
+                file.write(';'.join([name, st, nd]) + '\n')
+            file.write('#\n')
+
 if __name__ == '__main__':
     j = load_data("E:/kyykkavids/Leikkaamattomat/testi.txt")
+    save_data(*j)
     print(j)

@@ -43,7 +43,7 @@ async def get_data_from_api(liiga: Kyykkaliiga, match_id: int, year: int = 2024)
         response = await loop.run_in_executor(None, requests.get, api_url)
         list_of_df = pd.read_html(response.text, encoding='utf-8')
         period = None
-        last_team = 0
+        last_team = 1
         last_team_name = None
         i = 0
         for row in list_of_df[1].iterrows():
@@ -62,7 +62,7 @@ async def get_data_from_api(liiga: Kyykkaliiga, match_id: int, year: int = 2024)
                 player = i % 2 + 2 * (i // 4)
             else:
                 player = i % 2 + 2 * ((i - 8) // 4)
-            name, team = name.split(",")
+            name, team = name.split(", ")
             if last_team_name != team:
                 last_team = int(not last_team)
                 last_team_name = team
@@ -123,5 +123,6 @@ async def get_data_from_api(liiga: Kyykkaliiga, match_id: int, year: int = 2024)
 
 if __name__ == '__main__':
     print('Hello')
-    asyncio.run(get_data_from_api(Kyykkaliiga.kyykkäliiga, 5197))
-    # thrower_data = get_data_from_api(Kyykkaliiga.OKL, 2024, 12)
+    # asyncio.run(get_data_from_api(Kyykkaliiga.kyykkäliiga, 5197))
+    jotain = asyncio.run(get_data_from_api(Kyykkaliiga.OKL, 93, 2023))
+    print(jotain[0])

@@ -27,8 +27,10 @@ def run_automatic_editor(
         thrower_data, (home_team, away_team), starting_team = load_data(file_path)
 
     # Other config values
-    textbox_name = 'Text1'
-    score_board_bg_name = 'BackgroundRectangle'
+    textbox_name = 'NameText'
+    scoreboard_merge_name = 'ScoreBoardMerge'
+    scoreboard_team_turn_names = ['TurnTeam1', 'TurnTeam2']
+    direction_node_name = 'Direction'
     end_name_fade = True    # If the 'score' clip needs fade  
     fade_frames = 20    # How many frames will take to fade out something
 
@@ -57,56 +59,48 @@ def run_automatic_editor(
     combine_clip = timeline.CreateCompoundClip(videoclips)
 
     if add_names_to_clip and add_score_to_clip:
-        comp = combine_clip.ImportFusionComp("E:\kyykkavids\Leikkaus välineet\Scoreboard_and_name_to_compound_clip.comp")
+        comp = combine_clip.ImportFusionComp("E:\kyykkavids\Leikkaus välineet\Scoreboard_and_name.comp")
     elif not add_names_to_clip and add_score_to_clip:
-        comp = combine_clip.ImportFusionComp("E:\kyykkavids\Leikkaus välineet\Scoreboard_to_compound_clip.comp")
+        comp = combine_clip.ImportFusionComp("E:\kyykkavids\Leikkaus välineet\Scoreboard.comp")
     elif add_names_to_clip and not add_score_to_clip:
-        comp = combine_clip.ImportFusionComp("E:\kyykkavids\Leikkaus välineet\\Name_to_compound_clip.comp")
+        comp = combine_clip.ImportFusionComp("E:\kyykkavids\Leikkaus välineet\PlayerName.comp")
 
     # Find the background to change the background between the periods
     if add_score_to_clip:
-        scoreboard_background = comp.FindTool(score_board_bg_name)
-        # Disable 2nd period numbers
-        period_2_node_names = ['Team1P2Score', 'Team2P2Score', 'Team1TotalScore', 'Team2TotalScore']
-        period_2_nodes = [comp.FindTool(name) for name in period_2_node_names]
-        for node in period_2_nodes:
-            node.Opacity1 = comp.BezierSpline()
-            node.Opacity1[0] = 0
+        scoreboard_background = comp.FindTool(scoreboard_merge_name)
+        scoreboard_background.Blend = comp.BezierSpline()
+        scoreboard_background.Blend[0] = 1
 
-        for node in period_2_nodes[0:2]:
-            node.StyledText = comp.BezierSpline()
-            node.StyledText[0] = 80
+        # Initialize turn indicators
+        turn_nodes = [comp.FindTool(name) for name in scoreboard_team_turn_names]
+        for node in turn_nodes:
+            node.Blend = comp.BezierSpline()
+            node.Blend[0] = 0
+        
+        direction_node = comp.FindTool(direction_node_name)
+        print(direction_node)
+        if direction_node is not None:
+            direction_node.StyledText = -1 if points_direction else 1
 
-        # Background of the period changes 0.12 between periods, add keyframes
-        # NOTE I am not sure that you need this dublicate code before 'BezierSpline'
-        scoreboard_background.Width[0] = 0.18
-        scoreboard_background.Center[0] = {1: 0.105, 2: 0.9, 3: 0.0}
-        scoreboard_background.Level[0] = 1
-        scoreboard_background.Width = comp.BezierSpline()
-        scoreboard_background.Center = comp.PolyPath()
-        scoreboard_background.Level = comp.BezierSpline()
-
-        # 1st Period scoreboard configs
-        scoreboard_background.Width[0] = 0.18
-        scoreboard_background.Center[0] = {1: 0.105, 2: 0.9, 3: 0.0}
-        scoreboard_background.Level[0] = 1
+        # Initialize 1. period
         period_1_node_names = ['Team1P1Score', 'Team2P1Score']
         period_1_nodes = [comp.FindTool(name) for name in period_1_node_names]
         for node in period_1_nodes:
-            node.Opacity1 = comp.BezierSpline()
             node.StyledText = comp.BezierSpline()
-            node.Opacity1 = 1
             node.StyledText[0] = 80
+
+        # Initialize 2. period
+        period_2_node_names = ['Team1P2Score', 'Team2P2Score']
+        period_2_nodes = [comp.FindTool(name) for name in period_2_node_names]
+        for node in period_2_nodes:
+            node.StyledText = comp.BezierSpline()
+            node.StyledText[0] = 80
+        
         # Set the team names to scoreboard
         team_name1_node = comp.FindTool('TeamName1')
         team_name1_node.StyledText = home_team
-        team_name1_node.Opacity1 = comp.BezierSpline()
-        team_name1_node.Opacity1[0] = 1
-
         team_name2_node = comp.FindTool('TeamName2')
         team_name2_node.StyledText = away_team
-        team_name2_node.Opacity1 = comp.BezierSpline()
-        team_name2_node.Opacity1[0] = 1
 
     if add_names_to_clip:
         name_node = comp.FindTool(textbox_name)
@@ -168,17 +162,21 @@ def run_automatic_editor(
         )
         period -= 1
         clip_number = 0 + offset
-        team = int(not starter_team) # First conversion removes condition from 1st 'if'
+        team = starter_team
         scores = [80, 80]
         throws = [16, 16]
         direction = -1 if points_direction else 1
-        # The start values need to ne adjusted
-        frame = start_frames[0]
-        team_nodes[0].StyledText[frame] = scores[0] * direction
-        team_nodes[1].StyledText[frame] = scores[1] * direction
+        frame = start_frames[clip_number]
+        # Turn nodes
+        turn_nodes[team].Blend[frame] = 1
         for i in range(16):
-            if i % 2 == 0:
+            if i % 2 == 0 and i != 0:
+                # If team changes, so does the turn indicator
+                turn_nodes[team].Blend[frame - 1] = 1
+                turn_nodes[team].Blend[frame] = 0
                 team = int(not team)
+                turn_nodes[team].Blend[frame - 1] = 0
+                turn_nodes[team].Blend[frame] = 1
             if i < 8:
                 player = i % 2 + 2 * (i // 4)
                 _, st, nd, *_ = thrower_data[period][team][player]
@@ -205,31 +203,23 @@ def run_automatic_editor(
     if add_names_to_clip:
         if start_offset:
             name_node.StyledText[0] = ""
-        clips_processed = add_names(1, clip_start_times, start_offset, starting_team)
+        clips_processed = add_names(1, clip_start_times, start_offset, int(starting_team))
 
     if add_score_to_clip:
+        # The start values need to ne adjusted
+        frame = clip_start_times[0]
+        direction = -1 if points_direction else 1
+        for node in [*period_1_nodes, *period_2_nodes]:
+            node.StyledText[frame] = 80 * direction
+        
         if start_offset:
-            # Instant transmission to 1st period if offset is given
             frame = clip_start_times[start_offset]
-            scoreboard_background.Width[0]  = 0
-            scoreboard_background.Level[0]  = 0
-            scoreboard_background.Width[frame- 1]  = 0
-            scoreboard_background.Level[frame- 1]  = 0
-            scoreboard_background.Width[frame] = 0.18
-            scoreboard_background.Level[frame] = 1
-            team_name1_node.Opacity1[0] = 0
-            team_name1_node.Opacity1[frame - 1] = 0
-            team_name1_node.Opacity1[frame] = 1
-            team_name2_node.Opacity1[0] = 0
-            team_name2_node.Opacity1[frame - 1] = 0
-            team_name2_node.Opacity1[frame] = 1
+            scoreboard_background.Blend[0] = 0
+            scoreboard_background.Blend[frame - 1] = 0
+            scoreboard_background.Blend[frame] = 1
+        
 
-            for node in period_1_nodes:
-                node.Opacity1[0] = 0
-                node.Opacity1[frame - 1] = 0
-                node.Opacity1[frame] = 1
-
-        clips_tmp = add_scores(1, clip_start_times, start_offset, period_1_nodes, starting_team)
+        clips_tmp = add_scores(1, clip_start_times, start_offset, period_1_nodes, int(starting_team))
         if add_names_to_clip:
             assert clips_processed == clips_tmp, (
                 f"Clip processed was not same ! (name == {clips_processed}, score == {clips_tmp})"
@@ -246,17 +236,6 @@ def run_automatic_editor(
         name_node.Opacity1[frame_number] = 1
         name_node.StyledText[frame_number] = ""
 
-    # Instant transistion to 2nd period scoreboard
-    if add_score_to_clip:
-        frame_number = clip_start_times[running_clip_number+middle_offset]
-        scoreboard_background.Width[frame_number - 1] = 0.18
-        scoreboard_background.Center[frame_number - 1] = {1: 0.105, 2: 0.9, 3: 0.0}
-        scoreboard_background.Width[frame_number] = 0.3
-        scoreboard_background.Center[frame_number] = {1: 0.165, 2: 0.9, 3: 0.0}
-        for node in period_2_nodes:
-            node.Opacity1[frame_number - 1] = 0
-            node.Opacity1[frame_number] = 1
-
     nd_period_frames = clip_start_times[running_clip_number:]
    
     if add_names_to_clip:
@@ -272,14 +251,18 @@ def run_automatic_editor(
     running_clip_number += clips_processed
 
     if end_name_fade and add_names_to_clip:
-        print(len(clip_start_times), running_clip_number)
         frame_number = clip_start_times[running_clip_number]
         name_node.Opacity1[frame_number - 1 - fade_frames] = 1
         name_node.Opacity1[frame_number - 1] = 0
 
+    if len(clip_start_times) > running_clip_number + 1:
+        frame = clip_start_times[running_clip_number + 1]
+        scoreboard_background.Blend[frame - 1] = 1
+        scoreboard_background.Blend[frame] = 0
+
     return True
 
 if __name__ == "__main__":
-    out = run_automatic_editor(points_direction=False)
+    out = run_automatic_editor(points_direction=False, middle_offset=0)
     print(f"Editointi loppui. Editointi palautti arvon: {out}")
     # print(app)

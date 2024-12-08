@@ -71,7 +71,7 @@ def save_data(thrower_data: np.ndarray[np.str_], team_names: list[str], starting
     file_name = ask_filename()
     with open(file_name, 'w', encoding='utf-8') as file:
         # header line
-        starter_team_name = 'home' if starting_team else 'away'
+        starter_team_name = 'away' if starting_team else 'home'
         file.write('#' + ';'.join([*team_names, starter_team_name]) + '\n')
         team = int(not starting_team)
         for period in range(2):

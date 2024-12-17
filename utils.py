@@ -75,6 +75,8 @@ def save_data(thrower_data: np.ndarray[np.str_], team_names: list[str], starting
         file.write('#' + ';'.join([*team_names, starter_team_name]) + '\n')
         team = int(not starting_team)
         for period in range(2):
+            if period == 1:
+                team = int(not team)
             for i in range(16):
                 if i % 2 == 0:
                     team = int(not team)

@@ -4,7 +4,7 @@ from utils import find_file, load_data
 def run_automatic_editor(
     start_offset: int = 1, # How many clips are at the start periods
     middle_offset: int = 1, # How many clips are at the between periods
-    starting_team: bool = True, # Which team start the game first Home: True , Away: False
+    starting_team: bool = False, # Which team start the game first Home: False , Away: True
     home_team: str = 'Team1',
     away_team: str = 'Team2',
     dublicate_timeline: bool = True,
@@ -142,22 +142,21 @@ def run_automatic_editor(
         for i in range(16):
             if i % 2 == 0:
                 team = int(not team)
-            if i in clips_missing:
-                continue
             if i < 8:
                 player = i % 2 + 2 * (i // 4)
                 name, st, nd, *_ = thrower_data[period][team][player]
             else:
                 player = i % 2 + 2 * ((i - 8) // 4)
                 name, _, _, st, nd = thrower_data[period][team][player]
-            for j, score in enumerate([st, nd], 1):
+            for j, score in enumerate([st, nd]):
                 if score == "e":
                     break
                 frame = start_frames[clip_number]
                 name_node.StyledText[frame] = name
                 if (i * 2 + j) not in clips_missing:
                     clip_number += 1
-
+                else:
+                    print(f"Skipped names : {name}")
         return clip_number
 
     def add_scores(
@@ -180,6 +179,7 @@ def run_automatic_editor(
         frame = start_frames[clip_number]
         # Turn nodes
         turn_nodes[team].Blend[frame] = 1
+        film_not_started = True # Keep not, if clips are missing at the start
         for i in range(16):
             if i % 2 == 0 and i != 0:
                 # If team changes, so does the turn indicator
@@ -194,19 +194,30 @@ def run_automatic_editor(
             else:
                 player = i % 2 + 2 * ((i - 8) // 4)
                 *_, st, nd = thrower_data[period][team][player]
-            for j, score in enumerate([st, nd], 1):
+            for j, score in enumerate([st, nd]):
+                is_missing = (i * 2 + j) in clips_missing
                 if score == "e":
                     break
                 elif score != 'h':
                     scores[team] -= int(score)
-                frame = start_frames[clip_number+1] # Change the score after the clip
+                # If we are missing throws from start, reduce the starting value
+                if film_not_started and is_missing:
+                    frame = clip_start_times[0]
+                else:
+                    # Change the score after the current clip
+                    frame = start_frames[clip_number+1]
                 throws[team] -= 1
                 if scores[team] > 0:
                     team_nodes[team].StyledText[frame] = scores[team] * direction
                 else:
                     team_nodes[team].StyledText[frame] = throws[team] * direction * -1
-                if (i * 2 + j) not in clips_missing:
+                if not is_missing:
+                    film_not_started = False
                     clip_number += 1
+                else:
+                    # Change frame back to what i was suppose to be for turn indicator
+                    frame = start_frames[clip_number]
+                    print("Skipped scores")
         return clip_number
 
     running_clip_number = 0
@@ -274,6 +285,5 @@ def run_automatic_editor(
     return True
 
 if __name__ == "__main__":
-    out = run_automatic_editor(points_direction=False, middle_offset=0)
+    out = run_automatic_editor(points_direction=False, middle_offset=1)
     print(f"Editointi loppui. Editointi palautti arvon: {out}")
-    # print(app)

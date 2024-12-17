@@ -12,6 +12,7 @@ def run_automatic_editor(
     add_score_to_clip: bool = True,
     thrower_data: np.ndarray[np.str_] | None = None,
     points_direction: bool = True,
+    clips_missing_per_period: list[list[int]] = [[], []],
     fusion_app = None
 ) -> bool:
     if fusion_app is None:
@@ -111,7 +112,13 @@ def run_automatic_editor(
         name_node.Opacity1 = 1
 
 
-    def add_names(period: int, start_frames: list[int], offset: int, starter_team: int) -> int:
+    def add_names(
+        period: int,
+        start_frames: list[int],
+        offset: int,
+        starter_team: int,
+        clips_missing: list[int]
+    ) -> int:
         """Adds thrower name and throw scores to clips\n
         
         Parameters
@@ -135,18 +142,21 @@ def run_automatic_editor(
         for i in range(16):
             if i % 2 == 0:
                 team = int(not team)
+            if i in clips_missing:
+                continue
             if i < 8:
                 player = i % 2 + 2 * (i // 4)
                 name, st, nd, *_ = thrower_data[period][team][player]
             else:
                 player = i % 2 + 2 * ((i - 8) // 4)
                 name, _, _, st, nd = thrower_data[period][team][player]
-            for score in [st, nd]:
+            for j, score in enumerate([st, nd], 1):
                 if score == "e":
                     break
                 frame = start_frames[clip_number]
                 name_node.StyledText[frame] = name
-                clip_number += 1
+                if (i * 2 + j) not in clips_missing:
+                    clip_number += 1
 
         return clip_number
 
@@ -156,6 +166,7 @@ def run_automatic_editor(
         offset: int,
         team_nodes: list,
         starter_team: int,
+        clips_missing: list[int],
     ) -> int:
         assert period in [1,2], (
             f"'Period'- field takes an input either '1' or '2'. Function got: '{period}'"
@@ -183,7 +194,7 @@ def run_automatic_editor(
             else:
                 player = i % 2 + 2 * ((i - 8) // 4)
                 *_, st, nd = thrower_data[period][team][player]
-            for score in [st, nd]:
+            for j, score in enumerate([st, nd], 1):
                 if score == "e":
                     break
                 elif score != 'h':
@@ -194,7 +205,8 @@ def run_automatic_editor(
                     team_nodes[team].StyledText[frame] = scores[team] * direction
                 else:
                     team_nodes[team].StyledText[frame] = throws[team] * direction * -1
-                clip_number += 1
+                if (i * 2 + j) not in clips_missing:
+                    clip_number += 1
         return clip_number
 
     running_clip_number = 0
@@ -203,7 +215,7 @@ def run_automatic_editor(
     if add_names_to_clip:
         if start_offset:
             name_node.StyledText[0] = ""
-        clips_processed = add_names(1, clip_start_times, start_offset, int(starting_team))
+        clips_processed = add_names(1, clip_start_times, start_offset, int(starting_team), clips_missing_per_period[0])
 
     if add_score_to_clip:
         # The start values need to ne adjusted
@@ -218,8 +230,7 @@ def run_automatic_editor(
             scoreboard_background.Blend[frame - 1] = 0
             scoreboard_background.Blend[frame] = 1
         
-
-        clips_tmp = add_scores(1, clip_start_times, start_offset, period_1_nodes, int(starting_team))
+        clips_tmp = add_scores(1, clip_start_times, start_offset, period_1_nodes, int(starting_team), clips_missing_per_period[0])
         if add_names_to_clip:
             assert clips_processed == clips_tmp, (
                 f"Clip processed was not same ! (name == {clips_processed}, score == {clips_tmp})"
@@ -239,10 +250,10 @@ def run_automatic_editor(
     nd_period_frames = clip_start_times[running_clip_number:]
    
     if add_names_to_clip:
-        clips_processed = add_names(2, nd_period_frames, middle_offset, int(not starting_team))
+        clips_processed = add_names(2, nd_period_frames, middle_offset, int(not starting_team), clips_missing_per_period[1])
 
     if add_score_to_clip:
-        clips_tmp = add_scores(2, nd_period_frames, middle_offset, period_2_nodes[0:2], int(not starting_team))
+        clips_tmp = add_scores(2, nd_period_frames, middle_offset, period_2_nodes[0:2], int(not starting_team), clips_missing_per_period[1])
         if add_names_to_clip:
             assert clips_processed == clips_tmp, (
                 f"Clip processed was not same ! (name == {clips_processed}, score == {clips_tmp})"

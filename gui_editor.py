@@ -94,11 +94,49 @@ def combo_buttons(node):
         find_file_button.grid(row=combo_row+1, column=0)
         find_web_button.grid_forget()
 
-    
+def get_missing_clips() -> list[int]:
+    lista: list[list[int]] = []
+    str_vars = [missing_clips1.get(), missing_clips2.get()]
+    try:
+        print(str_vars)
+        for str_var in str_vars:
+            print(lista)
+            lista2 = []
+            if "," in str_var:
+                tmp = str_var.split(",") 
+                for var in tmp:
+                    if "-" in var:
+                        tmp_2 = var.split('-')
+                        for number in range(int(tmp_2[0])-1, int(tmp_2[1])):
+                            lista2.append(number)
+                    else:
+                        lista2.append(int(var)-1)
+            elif len(str_var):
+                print("Olen täälä: ", str_var)
+                if "-" in str_var:
+                    tmp_2 = str_var.split('-')
+                    for number in range(int(tmp_2[0])-1, int(tmp_2[1])):
+                        lista2.append(number)
+                else:
+                    lista2.append(int(str_var)-1)
+            lista.append(lista2)
+    except IndexError:
+        print("Tried to use '-' probably wrong. Format is : 'first_clip_missing'-'last_clip_missing'")
+        print("WARN: Returning empty list as 'missing_clips' argument")
+        return [[], []]
+    except ValueError:
+        print("Need to use only positive numbers, starting from 1!!!")
+        print("WARN: Returning empty list as 'missing_clips' argument")
+        return [[], []]
+    return lista
+
 def launch_program():
     if not names.get() and not points_var.get():
         status.set("Ei mitään valittu")
     else:
+
+        missing = get_missing_clips()
+        print(missing)
         status.set("")
         val = run_automatic_editor(
             start_offset=so_var.get(),
@@ -111,6 +149,7 @@ def launch_program():
             add_score_to_clip=points_var.get(),
             thrower_data=thrower_data,
             points_direction=points_direction.get(),
+            clips_missing_per_period=missing,
             fusion_app=app,
         )
         if val is True:
@@ -363,6 +402,20 @@ ttk.Label(setup_window, text="Keskiklippien määrä").grid(row=running_row, col
 tk.Scale(setup_window, variable=mid_var, orient="horizontal", from_=0, to=10, tickinterval=5).grid(
     row=running_row,
     column=1,
+)
+running_row += 1
+
+missing_clips1 = tk.StringVar(setup_window)
+ttk.Label(setup_window, text="Puuttuvat klipit 1. erä").grid(row=running_row, column=0)
+ttk.Entry(setup_window, textvariable=missing_clips1, justify='left').grid(
+    row=running_row, column=1
+)
+running_row += 1
+
+missing_clips2 = tk.StringVar(setup_window)
+ttk.Label(setup_window, text="Puuttuvat klipit 2. erä").grid(row=running_row, column=0)
+ttk.Entry(setup_window, textvariable=missing_clips2, justify='left').grid(
+    row=running_row, column=1
 )
 running_row += 1
 
